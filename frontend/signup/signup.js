@@ -22,7 +22,7 @@ async function addUser(e){
         
         if(response.status==201){
             alert(response.data.message)
-            window.location.href='./login.html'
+            window.location.href='../login.html'
         }
         else{
             alert(response.data.message);
