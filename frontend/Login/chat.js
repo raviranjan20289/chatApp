@@ -13,16 +13,16 @@ const getChat = JSON.stringify({ groupId: chatName.id});
 window.addEventListener('DOMContentLoaded',async ()=>{
     try{
         chatHead.textContent=chatName.name
-        if(chatName.isGroup){
-            const inviteBtn = document.createElement('button');
-            inviteBtn.classList= 'btn btn-right'
-            inviteBtn.appendChild(document.createTextNode('Invite Members'))
-            header.appendChild(inviteBtn)
-            inviteBtn.onclick=(async ()=>{
-                const link =  `http://localhost:3000/groups/joinGroup/${chatName.id}`;
-                alert(`Share this link with your friends to invite them ${link} `)
-            })
-        }
+        // if(chatName.isGroup){
+        //     const inviteBtn = document.createElement('button');
+        //     inviteBtn.classList= 'btn btn-right'
+        //     inviteBtn.appendChild(document.createTextNode('Invite Members'))
+        //     header.appendChild(inviteBtn)
+        //     inviteBtn.onclick=(async ()=>{
+        //         const link =  `http://localhost:3000/groups/joinGroup/${chatName.id}`;
+        //         alert(`Share this link with your friends to invite them ${link} `)
+        //     })
+        // }
 
         logout.addEventListener('click',()=>{
             localStorage.removeItem('token')
@@ -37,17 +37,48 @@ window.addEventListener('DOMContentLoaded',async ()=>{
         else{
             
             const response = await axios.get(`http://localhost:3000/chats/getChats?lastMessageId=undefined&&getChat=${getChat}`, {headers: {'Authorization': token}});
+            console.log(response)
             if(response.data.success){
-                
-                // let chatArray = []
+                                
                 let chatArray = [...response.data.chatData]
-                // for(let i=0;i<response.data.chatData.length;i++){
-                //     chatArray.push(response.data.chatData[i])
-                // }
                 chatArray = chatArray.slice(Math.abs(10-response.data.chatData.length))
                 localStorage.setItem('oldMessage',JSON.stringify(chatArray));
-                
                 showChat(chatArray)
+
+                if( response.data.isAdmin){
+                    const inviteBtn = document.createElement('button');
+                    inviteBtn.classList= 'btn btn-right'
+                    inviteBtn.appendChild(document.createTextNode('Invite Members'))
+                    header.appendChild(inviteBtn)
+                    inviteBtn.onclick=(async ()=>{
+                        const link =  `http://localhost:3000/groups/joinGroup/${chatName.id}`;
+                        alert(`Share this link with your friends to invite them ${link} `)
+                    })
+                    const groupControlBtn = document.createElement('button');
+                    groupControlBtn.classList= 'btn btn-right'
+                    groupControlBtn.appendChild(document.createTextNode('group controls'))
+                    header.appendChild(groupControlBtn)
+                    groupControlBtn.onclick=(async ()=>{
+                        window.location.href = './admin.html';
+                    })
+                    // const addMemberBtn = document.createElement('button');
+                    // addMemberBtn.classList= 'btn btn-right'
+                    // addMemberBtn.appendChild(document.createTextNode('Invite Members'))
+                    // header.appendChild(addMemberBtn)
+                    // addMemberBtn.onclick=(async ()=>{
+                    //     const link =  `http://localhost:3000/groups/joinGroup/${chatName.id}`;
+                    //     alert(`Share this link with your friends to invite them ${link} `)
+                    // })
+                    // const removeMemberBtn = document.createElement('button');
+                    // removeMemberBtn.classList= 'btn btn-right'
+                    // removeMemberBtn.appendChild(document.createTextNode('Invite Members'))
+                    // header.appendChild(removeMemberBtn)
+                    // removeMemberBtn.onclick=(async ()=>{
+                    //     const link =  `http://localhost:3000/groups/joinGroup/${chatName.id}`;
+                    //     alert(`Share this link with your friends to invite them ${link} `)
+                    // })
+                }
+
             }
         }
 
@@ -62,8 +93,12 @@ window.addEventListener('DOMContentLoaded',async ()=>{
                 }
                 
                 const response = await axios.get(`http://localhost:3000/chats/getChats?lastMessageId=${lastMessageId}&&getChat=${getChat}`, {headers: {'Authorization': token}});
-            
+                
+                
+                
+                
                 if (response.data.chatData.length > 0) {
+                    
                     if(!lastMessageId){
                         localStorage.setItem('oldMessage', JSON.stringify(response.data.chatData));
                         showChat(response.data.chatData)

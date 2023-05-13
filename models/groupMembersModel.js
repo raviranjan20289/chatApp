@@ -12,9 +12,16 @@ const Member = sequelize.define('member',{
         type: Sequelize.STRING,
         allowNull: false
     },
+    userName: {
+        type: Sequelize.STRING
+    },
     userId: {
         type: Sequelize.INTEGER
+    },
+    isAdmin: {
+        type: Sequelize.BOOLEAN
     }
+
     
 });
 
